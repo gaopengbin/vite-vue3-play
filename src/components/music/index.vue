@@ -1,12 +1,13 @@
 <template>
-  <n-layout has-sider>
-    <n-layout-sider content-style="padding: 24px;"> <left-side></left-side> </n-layout-sider>
-    <n-layout>
-      <n-layout-header>颐和园路</n-layout-header>
-      <n-layout-content content-style="padding: 24px;"> 平山道 </n-layout-content>
-      <n-layout-footer>成府路</n-layout-footer>
+  <n-layout id="my-music">
+    <n-layout-header style="background-color: red"><Header /></n-layout-header>
+    <n-layout has-sider>
+      <n-layout-sider content-style="padding: 10px;" collapse-mode="width"> <left-side></left-side></n-layout-sider>
+      <n-layout-content content-style="padding: 24px;background-color: pink"> <RouterView /> </n-layout-content>
     </n-layout>
+    <n-layout-footer style="background-color: rgb(177, 171, 171)"><Bottom /></n-layout-footer>
   </n-layout>
+
   <!-- <div>
     <n-input placeholder="搜索" @keyup="handleKeyup">
       <template #prefix>
@@ -29,32 +30,13 @@
 </template>
 
 <script setup lang="ts">
-import { FlashOutline } from "@vicons/ionicons5";
-import axios from "axios";
-import { ref } from "vue";
+import Header from "./header/index.vue";
 import LeftSide from "./leftSide/index.vue";
-const albums = ref([]);
-const artists = ref([]);
-const songs = ref([]);
-const handleKeyup = (e: KeyboardEvent) => {
-  console.log(e);
-  if (e.key === "Enter") {
-    console.log("回车", e.target.value);
-    axios.get("/api/search/multimatch?keywords=" + e.target.value).then((res) => {
-      console.log(res);
-      albums.value = res.data.result.album;
-      artists.value = res.data.result.artist;
-    });
-    axios.get("/api/search?keywords=" + e.target.value).then((res) => {
-      console.log(res.data);
-      songs.value = res.data.result.songs;
-    });
-  }
-};
+import Bottom from "./bottom/player.vue";
 </script>
 
 <style scoped>
-.n-card {
-  width: 200px;
+.n-layout-sider {
+  width: auto !important;
 }
 </style>
