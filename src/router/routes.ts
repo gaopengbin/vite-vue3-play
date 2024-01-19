@@ -28,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
                 path:'search',
                 name:'search',
                 component:()=>import('@/components/music/content/searchResult.vue')
+            },
+            {
+                path:'songSheet',
+                name:'songSheet',
+                component:()=>import('@/components/music/content/songSheet.vue')
             }
         ]
     }

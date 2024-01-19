@@ -25,7 +25,7 @@ const handleKeyup = (e: KeyboardEvent) => {
       router.push({ query: { keywords: e.target.value } });
       return;
     }
-    router.push({ path: "music/search", query: { keywords: e.target.value } });
+    router.push({ path: "/music/search", query: { keywords: e.target.value } });
   }
 };
 </script>

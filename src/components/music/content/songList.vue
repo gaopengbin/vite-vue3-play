@@ -1,6 +1,6 @@
 <template>
   <div class="songList">
-    <n-data-table :columns="columns" :data="songs" :bordered="false" :max-height="250" />
+    <n-data-table :columns="columns" :data="songs" :bordered="false" :max-height="400" />
   </div>
 </template>
 
