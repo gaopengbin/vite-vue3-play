@@ -5,7 +5,7 @@
         <img :src="item.img1v1Url" />
       </template>
     </n-card>
-    <SongList :songs="songs" />
+    <SongList :songlist="songs" />
   </div>
 </template>
 
@@ -33,7 +33,18 @@ const searth = () => {
   console.log("回车", keywords);
   cloudsearch({ keywords: keywords, offset: 0, limit: 30, type: "1" }).then((res) => {
     console.log(res);
-    songs.value = res.data.result.songs;
+    songs.value = res.data.result.songs.map((item: any) => {
+      const names = item.ar.map((subItem: any) => subItem.name).join(",");
+      return {
+        cover: item.al.picUrl,
+        title: item.name,
+        singer: names,
+        album: item.al.name,
+        time: item.dt,
+        id: item.id,
+        mv: item.mv,
+      };
+    });
   });
   axios.get("/api/search/multimatch?keywords=" + keywords).then((res) => {
     console.log(res);

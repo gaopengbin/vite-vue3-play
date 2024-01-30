@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ detail.name }}</h1>
-    <songList :songs="detail.tracks" />
+    <songList :songlist="detail.tracks" />
   </div>
 </template>
 
@@ -36,6 +36,18 @@ watch(
 const getSongSheetDetail = (id: string) => {
   playListDetail(id).then(({ data }) => {
     console.log(data);
+    let tracks = data.playlist.tracks.map((item: any) => {
+      return {
+        cover: item.al.picUrl,
+        title: item.name,
+        singer: item.ar.map((subItem: any) => subItem.name).join(","),
+        album: item.al.name,
+        time: item.dt,
+        id: item.id,
+        mv: item.mv,
+      };
+    });
+    data.playlist.tracks = tracks;
     detail.value = data.playlist;
   });
 };

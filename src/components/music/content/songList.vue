@@ -1,15 +1,18 @@
 <template>
   <div class="songList">
-    <n-data-table :columns="columns" :data="songs" :bordered="false" :max-height="400" />
+    <n-data-table :columns="columns" :data="songlist" :bordered="false" :max-height="400" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, defineComponent } from "vue";
+import { h, defineComponent, watchEffect, watch } from "vue";
 import { NButton, useMessage } from "naive-ui";
 import type { DataTableColumns } from "naive-ui";
 import moment from "moment";
 import { songUrl, lyric } from "@/api/api";
+import { musicStore } from "../../../store/music";
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 
 type Song = {
   no: number;
@@ -17,7 +20,7 @@ type Song = {
   length: string;
 };
 const props = defineProps<{
-  songs: any[];
+  songlist: any[];
 }>(); // 传入的歌曲列表
 
 const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumns<Song> => {
@@ -27,7 +30,7 @@ const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumn
       key: "index",
       width: 50,
       render(row) {
-        return h("span", props.songs.indexOf(row) + 1);
+        return h("span", props.songlist.indexOf(row) + 1);
       },
     },
     {
@@ -35,18 +38,26 @@ const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumn
       key: "cover",
       width: 80,
       render(row) {
-        return h("img", { src: row.al.picUrl, class: "songcover" });
+        return h("img", { src: row.cover, class: "songcover" });
       },
     },
     {
       title: "标题",
-      key: "name",
+      key: "title",
+    },
+    {
+      title: "歌手",
+      key: "singer",
+    },
+    {
+      title: "专辑",
+      key: "album",
     },
     {
       title: "时长",
       key: "length",
       render(row) {
-        return h("span", moment(row.dt).format("mm:ss"));
+        return h("span", moment(row.time).format("mm:ss"));
       },
     },
     {
@@ -67,15 +78,45 @@ const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumn
     },
   ];
 };
+const musicstore = musicStore();
+const { songs, currentIndex } = storeToRefs(musicStore());
+// console.log("musicstore", musicstore);
+// const currentIndex = computed(() => musicstore.currentIndex);
+// watchEffect(() => {
+//   console.log("currentIndex111", currentIndex.value);
+// });
+// watch(
+//   () => musicstore.currentIndex,
+//   () => {
+//     console.log("musicStore2222", musicstore.$state);
+//   }
+// );
+// musicstore.$subscribe((mutation, state) => {
+//   console.log("mutation", state);
+// });
+
 const play = (row) => {
-  console.log("play");
+  console.log("play", row);
   songUrl(row).then((res) => {
-    console.log(res);
+    // console.log(row, res);
+    songs.value.push({
+      title: row.title,
+      singer: row.singer,
+      cover: row.cover,
+      src: res.data.data[0].url,
+      time: row.time,
+      album: row.album,
+      id: row.id,
+      mv: row.mv,
+      Lyric: "",
+    });
+    currentIndex.value = songs.value.length - 1;
+    console.log(songs.value, currentIndex.value);
     // const audio = new Audio(res.data.data[0].url);
     // audio.play();
   });
   lyric(row.id).then((res) => {
-    console.log(res);
+    // console.log(res);
   });
 };
 const columns = createColumns({ play });

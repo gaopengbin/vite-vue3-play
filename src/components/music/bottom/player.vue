@@ -1,5 +1,6 @@
 <template>
   <div class="player">
+    <audio ref="audio" :src="currentSong.src" @timeupdate="handleTimeUpdate" @durationchange="handleDurationChange" @ended="handleEnded"></audio>
     <n-image width="60" :src="cover" @click="active = true" preview-disabled />
     <span>{{ name }}</span>
     <div class="control">
@@ -9,7 +10,7 @@
             <n-icon><PlaySkipBack /></n-icon>
           </template>
         </n-button>
-        <n-button ghost @click="play">
+        <n-button ghost @click="playOrPause">
           <template #icon>
             <n-icon><Pause v-show="isPlaying" /><Play v-show="!isPlaying" /></n-icon>
           </template>
@@ -29,13 +30,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRefs, reactive } from "vue";
+import { ref, toRefs, reactive, computed, watchEffect } from "vue";
 import { Pause, PlaySkipBack, PlaySkipForward, Play } from "@vicons/ionicons5";
-// const active = ref(false);
-// const currentTime = ref(0);
-// const cover = "https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg";
-// const name = "07akioni";
-// const length = 100;
+import { musicStore } from "../../../store/music";
+import { watch } from "vue";
+import { nextTick } from "vue";
+
+const music = musicStore();
+console.log("music", music);
 
 const playerState = reactive({
   isPlaying: false,
@@ -48,9 +50,50 @@ const playerState = reactive({
 
 const { isPlaying, active, currentTime, cover, name, length } = toRefs(playerState);
 
+const currentIndex = computed(() => music.currentIndex);
+// const currentSong = music.songs[music.currentIndex];
+const currentSong = ref(music.songs[music.currentIndex]);
+watch(currentSong, (val) => {
+  console.log("currentSong", val);
+  play();
+});
+music.$subscribe((mutation, state) => {
+  console.log("mutation", state);
+  currentSong.value = state.songs[state.currentIndex];
+});
+const audio: any = ref(null);
+const handleTimeUpdate = (e: any) => {
+  playerState.currentTime = e.target.currentTime;
+};
+const handleDurationChange = (e: any) => {
+  playerState.length = e.target.duration;
+};
+const handleEnded = () => {
+  console.log("ended");
+};
+
 const play = () => {
-  console.log("play");
+  playerState.isPlaying = true;
+  nextTick(() => {
+    audio.value.play();
+  });
+};
+
+const pause = () => {
+  playerState.isPlaying = false;
+  nextTick(() => {
+    audio.value.pause();
+  });
+};
+
+const playOrPause = () => {
+  // console.log("play", currentSong.value, music.currentIndex);
   playerState.isPlaying = !playerState.isPlaying;
+  if (playerState.isPlaying) {
+    play();
+  } else {
+    pause();
+  }
 };
 const prev = () => {
   console.log("prev");
