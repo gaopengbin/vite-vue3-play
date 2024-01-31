@@ -22,17 +22,13 @@ const songs = ref([]);
 let keywords = route.query.keywords;
 
 onBeforeRouteUpdate((to, from, next) => {
-  console.log("to", to);
-  console.log("from", from);
   keywords = to.query.keywords;
   searth();
   next();
 });
 
 const searth = () => {
-  console.log("回车", keywords);
   cloudsearch({ keywords: keywords, offset: 0, limit: 30, type: "1" }).then((res) => {
-    console.log(res);
     songs.value = res.data.result.songs.map((item: any) => {
       const names = item.ar.map((subItem: any) => subItem.name).join(",");
       return {
@@ -47,7 +43,6 @@ const searth = () => {
     });
   });
   axios.get("/api/search/multimatch?keywords=" + keywords).then((res) => {
-    console.log(res);
     albums.value = res.data.result.album;
     artists.value = res.data.result.artist;
   });

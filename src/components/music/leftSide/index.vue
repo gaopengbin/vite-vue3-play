@@ -26,7 +26,6 @@ watch(
 onMounted(() => {
   if (globalstore.userInfo.userId) {
     userPlaylist(globalstore.userInfo.userId).then((res) => {
-      console.log(res.data.playlist);
       res.data.playlist.forEach((item: any) => {
         list.value.push({
           label: () =>

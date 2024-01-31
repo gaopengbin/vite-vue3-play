@@ -1,0 +1,21 @@
+#app {
+    width: 100%;
+    height: 100%;
+    background-color: #99b0c7;
+    overflow: hidden;
+}
+//整体容器
+#my-music {
+    width: 80%;
+    margin: 5% auto 0 auto;
+    border-radius: 15px;
+    // 左侧栏
+    .n-layout-sider-scroll-container{
+        border-right: 1px solid rgb(204, 204, 204);
+    }
+    //播放器
+    .player{
+        background-color: rgb(255, 255, 255);
+        border-top: 1px solid rgb(204, 204, 204);
+    }
+}

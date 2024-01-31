@@ -78,43 +78,32 @@ const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumn
     },
   ];
 };
-const musicstore = musicStore();
 const { songs, currentIndex } = storeToRefs(musicStore());
-// console.log("musicstore", musicstore);
-// const currentIndex = computed(() => musicstore.currentIndex);
-// watchEffect(() => {
-//   console.log("currentIndex111", currentIndex.value);
-// });
-// watch(
-//   () => musicstore.currentIndex,
-//   () => {
-//     console.log("musicStore2222", musicstore.$state);
-//   }
-// );
-// musicstore.$subscribe((mutation, state) => {
-//   console.log("mutation", state);
-// });
 
 const play = (row) => {
-  console.log("play", row);
-  songUrl(row).then((res) => {
-    // console.log(row, res);
-    songs.value.push({
-      title: row.title,
-      singer: row.singer,
-      cover: row.cover,
-      src: res.data.data[0].url,
-      time: row.time,
-      album: row.album,
-      id: row.id,
-      mv: row.mv,
-      Lyric: "",
+  const isExisting = songs.value.findIndex((item) => item.id == row.id);
+  if (isExisting != -1) {
+    currentIndex.value = isExisting;
+  } else {
+    songUrl(row).then((res) => {
+      // console.log(row, res);
+      songs.value.push({
+        title: row.title,
+        singer: row.singer,
+        cover: row.cover,
+        src: res.data.data[0].url,
+        time: row.time,
+        album: row.album,
+        id: row.id,
+        mv: row.mv,
+        Lyric: "",
+      });
+      currentIndex.value = songs.value.length - 1;
+
+      // const audio = new Audio(res.data.data[0].url);
+      // audio.play();
     });
-    currentIndex.value = songs.value.length - 1;
-    console.log(songs.value, currentIndex.value);
-    // const audio = new Audio(res.data.data[0].url);
-    // audio.play();
-  });
+  }
   lyric(row.id).then((res) => {
     // console.log(res);
   });
