@@ -38,7 +38,7 @@ const createColumns = ({ play }: { play: (row: Song) => void }): DataTableColumn
       key: "cover",
       width: 80,
       render(row) {
-        return h("img", { src: row.cover, class: "songcover" });
+        return h("img", { src: row.cover + "?param=40y40", class: "songcover" });
       },
     },
     {
@@ -85,8 +85,10 @@ const play = (row) => {
   if (isExisting != -1) {
     currentIndex.value = isExisting;
   } else {
-    songUrl(row).then((res) => {
+    songUrl(row).then(async (res) => {
       // console.log(row, res);
+      const { data } = await lyric(row.id);
+
       songs.value.push({
         title: row.title,
         singer: row.singer,
@@ -96,12 +98,9 @@ const play = (row) => {
         album: row.album,
         id: row.id,
         mv: row.mv,
-        Lyric: "",
+        Lyric: data.lrc.lyric,
       });
       currentIndex.value = songs.value.length - 1;
-
-      // const audio = new Audio(res.data.data[0].url);
-      // audio.play();
     });
   }
   lyric(row.id).then((res) => {

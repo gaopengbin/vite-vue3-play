@@ -42,7 +42,7 @@ onMounted(() => {
               { default: () => item.name }
             ),
           key: item.id,
-          icon: () => h("img", { src: item.coverImgUrl, class: "listcover" }),
+          icon: () => h("img", { src: item.coverImgUrl + "?param=40y40", class: "listcover" }),
         });
       });
     });

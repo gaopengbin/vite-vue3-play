@@ -14,6 +14,7 @@ export const GlobalStore = defineStore({
             isLogin: false,
             qrKey: '',
             themeConfig: {},
+            cookie: '',
         }
     },
     persist: {
