@@ -60,14 +60,14 @@ onMounted(async () => {
 // 二维码状态
 async function checkStatus(key) {
   const res = await axios({
-    url: `/api/login/qr/check?key=${key}&timestamp=${Date.now()}`,
+    url: import.meta.env.VITE_API_URL + `/login/qr/check?key=${key}&timestamp=${Date.now()}`,
   });
   return res.data;
 }
 // 获取登录状态
 async function getLoginStatus(cookie = "") {
   const res = await axios({
-    url: `/api/login/status?timestamp=${Date.now()}`,
+    url: import.meta.env.VITE_API_URL + `/login/status?timestamp=${Date.now()}`,
     method: "post",
     data: {
       cookie,
@@ -82,11 +82,11 @@ async function login() {
   // const cookie: any = localStorage.getItem("cookie");
   getLoginStatus(globalstore.cookie);
   const res = await axios({
-    url: `/api/login/qr/key?timestamp=${Date.now()}`,
+    url: import.meta.env.VITE_API_URL + `/login/qr/key?timestamp=${Date.now()}`,
   });
   const key = res.data.data.unikey;
   const res2 = await axios({
-    url: `/api/login/qr/create?key=${key}&qrimg=true&timestamp=${Date.now()}`,
+    url: import.meta.env.VITE_API_URL + `/login/qr/create?key=${key}&qrimg=true&timestamp=${Date.now()}`,
   });
   qrimg.value = res2.data.data.qrimg;
 

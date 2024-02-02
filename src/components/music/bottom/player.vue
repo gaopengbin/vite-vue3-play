@@ -46,7 +46,6 @@
           <!-- 封面 -->
           <div style="margin-right: 150px">
             <div style="position: relative">
-              <img class="vinyl rotate" :style="{ animationPlayState: animationPlayState }" src="../static/img/vinyl.png" alt="" />
               <n-image width="250" :style="{ animationPlayState: animationPlayState }" :src="currentSong.cover + '?param=350y350'"></n-image>
             </div>
           </div>
