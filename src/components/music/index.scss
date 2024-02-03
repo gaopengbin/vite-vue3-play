@@ -8,16 +8,35 @@
 }
 //整体容器
 #my-music {
+    background-image: url(/神堕八岐大蛇.webp);
+    background-size: 100% 100%;
     width: 80%;
     margin: 5% auto 0 auto;
     border-radius: 15px;
+    .music-header {
+        border-radius: 15px 15px 0 0;
+    }
     // 左侧栏
     .n-layout-sider-scroll-container {
         border-right: 1px solid rgb(204, 204, 204);
     }
     //播放器
     .player {
-        background-color: rgb(255, 255, 255);
+        // background-color: rgb(255, 255, 255);
         border-top: 1px solid rgb(204, 204, 204);
+    }
+    .n-layout-sider-scroll-container{
+        // 滚动条
+        &::-webkit-scrollbar {
+            width: 0px;
+            height: 5px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        &::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
     }
 }

@@ -1,12 +1,38 @@
 @import "./var.scss";
 #my-music {
+    .n-layout {
+        background-color: var(--music-background-color);
+        color: var(--music-font-color);
+        .n-button {
+            color: var(--music-font-color);
+        }
+    }
     .music-header {
         background-color: var(--music-header-background-color);
+        border-bottom: 1px solid var(--music-border-color);
     }
     .music-left {
+        background-color: var(--music-header-background-color);
     }
     .music-content {
+        .n-data-table .n-data-table-table {
+            background-color: var(--music-background-color);
+        }
+        .n-data-table .n-data-table-thead {
+            background-color: var(--music-table-header-background-color);
+        }
+        .n-data-table .n-data-table-th {
+            background-color: var(--music-table-header-background-color);
+        }
+        .n-data-table .n-data-table-td {
+            background-color: var(--music-table-row-background-color);
+        }
     }
     .music-footer {
+        background-color: var(--music-footer-background-color);
+        color: var(--music-font-color);
+        .n-button {
+            color: var(--music-font-color);
+        }
     }
 }

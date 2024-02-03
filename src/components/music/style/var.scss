@@ -1,8 +1,20 @@
-.dark,
-body {
+.dark {
     --music-header-background-color: #242424;
 }
 
+
 .light {
     --music-header-background-color: #fff;
+    --music-border-color: #ccc;
+}
+body,
+.tansparent {
+    --music-background-color: transparent;
+    --music-header-background-color: transparent;
+    --music-left-background-color: transparent;
+    --music-border-color: rgba(255, 255, 255, 0.589);
+    --music-footer-background-color: transparent;
+    --music-table-header-background-color: rgba(255, 255, 255, 0.192);
+    --music-table-row-background-color: rgba(255, 255, 255, 0.589);
+    --music-font-color: #fff;
 }

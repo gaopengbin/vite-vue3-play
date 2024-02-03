@@ -1,11 +1,11 @@
 <template>
   <n-layout id="my-music">
-    <n-layout-header class="music-header" style="background-color: red"><Header /></n-layout-header>
+    <n-layout-header class="music-header"><Header /></n-layout-header>
     <n-layout has-sider>
       <n-layout-sider class="music-left" content-style="padding: 10px;" collapse-mode="width"> <left-side></left-side></n-layout-sider>
-      <n-layout-content class="music-content" content-style="padding: 24px;background-color: white"> <RouterView /> </n-layout-content>
+      <n-layout-content class="music-content" content-style="padding: 24px;"> <RouterView /> </n-layout-content>
     </n-layout>
-    <n-layout-footer class="music-footer" style="background-color: rgb(177, 171, 171)"><Bottom /></n-layout-footer>
+    <n-layout-footer class="music-footer"><Bottom /></n-layout-footer>
   </n-layout>
 </template>
 

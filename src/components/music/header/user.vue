@@ -6,8 +6,8 @@
       <template #trigger>
         <div>
           <n-avatar round :size="24" :src="globalstore.userInfo.avatarUrl" /> <span class="username">{{ globalstore.userInfo.nickname }}</span>
-        </div></template
-      >
+        </div>
+      </template>
       <n-button size="small" @click="Logout"> 退出登录 </n-button>
     </n-popover>
 
@@ -16,7 +16,6 @@
         <template #header-extra> X </template>
         <img :src="qrimg" alt="" />
         <template #footer>
-          <!-- <n-button size="small" @click="vertify"> {{ qrInfo }} </n-button>/ -->
           {{ qrInfo }}
         </template>
       </n-card>
@@ -25,35 +24,21 @@
 </template>
 
 <script setup lang="ts">
-import { loginStatus, createKey, createQR, checkKey, logout } from "@/api/api";
-import { onMounted, ref, watch, computed, inject } from "vue";
+import { logout } from "@/api/api";
+import { onMounted, ref, inject } from "vue";
 import { GlobalStore } from "../../../store";
-import { useRouter } from "vue-router";
 import axios from "axios";
 
 const reload: any = inject("reload");
-
 const globalstore = GlobalStore();
-console.log(globalstore);
-const router = useRouter();
-
 const showModal = ref(false);
 const qrimg = ref("");
-
 const { isLogin, cookie } = globalstore;
 const currentUserStatus = ref(isLogin);
-
-console.log(currentUserStatus.value);
-
-watch(currentUserStatus, (val) => {
-  console.log(val);
-});
-let timer: any = null;
-
 const qrInfo = ref("扫码登录");
+
 onMounted(async () => {
   const { data } = await getLoginStatus(cookie);
-  console.log(data);
   if (!data.account || data.account.status == -10) {
     globalstore.isLogin = false;
   } else {
@@ -79,14 +64,12 @@ async function getLoginStatus(cookie = "") {
       cookie,
     },
   });
-  console.log(res.data);
   return res.data;
 }
 // 二维码登录
 async function login() {
   showModal.value = true;
   let timer: any;
-  // const cookie: any = localStorage.getItem("cookie");
   getLoginStatus(globalstore.cookie);
   const res = await axios({
     url: import.meta.env.VITE_API_URL + `/login/qr/key?timestamp=${Date.now()}`,
@@ -99,8 +82,8 @@ async function login() {
 
   timer = setInterval(async () => {
     const statusRes = await checkStatus(key);
+    qrInfo.value = statusRes.msg;
     if (statusRes.code === 800) {
-      // alert("二维码已过期,请重新获取");
       qrInfo.value = "二维码已过期,请重新获取";
       clearInterval(timer);
     }
@@ -108,15 +91,12 @@ async function login() {
       // 这一步会返回cookie
       clearInterval(timer);
       qrInfo.value = "登录成功";
-      console.log(statusRes);
       let loginRes = await getLoginStatus(statusRes.cookie);
-      console.log(loginRes);
       globalstore.isLogin = true;
       globalstore.userInfo = loginRes.data.profile;
       globalstore.cookie = statusRes.cookie;
       showModal.value = false;
       reload();
-      // localStorage.setItem("cookie", statusRes.cookie);
     }
   }, 3000);
 }
@@ -129,11 +109,9 @@ const Logout = async () => {
     globalstore.userInfo = {};
     globalstore.qrKey = "";
     globalstore.cookie = "";
-    // router.push({ name: "mainPage" });
     reload();
   }
 };
-const username = "laogao";
 </script>
 
 <style lang="scss" scoped>
