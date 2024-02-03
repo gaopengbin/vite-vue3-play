@@ -34,27 +34,32 @@ import axios from "axios";
 const reload: any = inject("reload");
 
 const globalstore = GlobalStore();
+console.log(globalstore);
 const router = useRouter();
 
 const showModal = ref(false);
 const qrimg = ref("");
 
-const currentUserStatus = computed(() => globalstore.isLogin);
+const { isLogin, cookie } = globalstore;
+const currentUserStatus = ref(isLogin);
+
+console.log(currentUserStatus.value);
 
 watch(currentUserStatus, (val) => {
-  // console.log(val);
+  console.log(val);
 });
 let timer: any = null;
 
 const qrInfo = ref("扫码登录");
 onMounted(async () => {
-  const { data } = await loginStatus();
-  if (!data.data.account || data.data.account.status == -10) {
+  const { data } = await getLoginStatus(cookie);
+  console.log(data);
+  if (!data.account || data.account.status == -10) {
     globalstore.isLogin = false;
   } else {
-    // currentUserStatus.value = true;
+    currentUserStatus.value = true;
     globalstore.isLogin = true;
-    globalstore.userInfo = data.data.profile;
+    globalstore.userInfo = data.profile;
   }
 });
 
@@ -102,7 +107,6 @@ async function login() {
     if (statusRes.code === 803) {
       // 这一步会返回cookie
       clearInterval(timer);
-      // alert("授权登录成功");
       qrInfo.value = "登录成功";
       console.log(statusRes);
       let loginRes = await getLoginStatus(statusRes.cookie);
@@ -116,52 +120,7 @@ async function login() {
     }
   }, 3000);
 }
-// login();
 
-const login1 = async () => {
-  showModal.value = true;
-  if (!globalstore.qrKey) {
-    const key = await createKey();
-    globalstore.qrKey = key.data.data.unikey;
-  }
-  const { data } = await createQR({ key: globalstore.qrKey, qrimg: true });
-  qrimg.value = data.data.qrimg;
-};
-
-const getQR = async () => {
-  const key = await createKey();
-  console.log(key);
-  globalstore.qrKey = key.data.data.unikey;
-  console.log(globalstore.qrKey);
-  const createQr = await createQR({ key: globalstore.qrKey, qrimg: true });
-  qrimg.value = createQr.data.data.qrimg;
-  console.log(createQr.data.data);
-};
-
-const vertify = async () => {
-  const { data } = await checkKey({ key: globalstore.qrKey });
-  console.log(data);
-  qrInfo.value = data.message;
-  if (data.code === 803) {
-    if (timer) {
-      clearTimeout(timer);
-      timer = null;
-    }
-    qrInfo.value = "登录成功";
-    let res = await loginStatus();
-    console.log(res);
-    if (res.data.data.account.status == -10) {
-      globalstore.isLogin = false;
-    } else {
-      globalstore.isLogin = true;
-      globalstore.userInfo = res.data.data.profile;
-    }
-
-    showModal.value = false;
-  } else if (data.code === 800) {
-    getQR();
-  }
-};
 const Logout = async () => {
   const { data } = await logout();
   console.log(data);
@@ -169,6 +128,7 @@ const Logout = async () => {
     globalstore.isLogin = false;
     globalstore.userInfo = {};
     globalstore.qrKey = "";
+    globalstore.cookie = "";
     // router.push({ name: "mainPage" });
     reload();
   }
