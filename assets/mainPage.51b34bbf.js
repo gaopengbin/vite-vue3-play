@@ -1,0 +1,1 @@
+import{_ as e}from"./plugin-vue_export-helper.21dcd24c.js";import{b as r,a}from"./index.7309ae6e.js";const c={};function n(o,t){return a(),r("div",null,"\u63A8\u8350\u4E3B\u9875")}var f=e(c,[["render",n]]);export{f as default};
