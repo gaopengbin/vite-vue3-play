@@ -16,7 +16,7 @@
         <template #header-extra> X </template>
         <img :src="qrimg" alt="" />
         <template #footer>
-          <n-button size="small" @click="vertify"> {{ qrInfo }} </n-button>
+          <!-- <n-button size="small" @click="vertify"> {{ qrInfo }} </n-button>/ -->
           {{ qrInfo }}
         </template>
       </n-card>
@@ -25,12 +25,13 @@
 </template>
 
 <script setup lang="ts">
-import logo from "@/assets/logo.png";
 import { loginStatus, createKey, createQR, checkKey, logout } from "@/api/api";
-import { onMounted, ref, watch, computed } from "vue";
+import { onMounted, ref, watch, computed, inject } from "vue";
 import { GlobalStore } from "../../../store";
 import { useRouter } from "vue-router";
 import axios from "axios";
+
+const reload: any = inject("reload");
 
 const globalstore = GlobalStore();
 const router = useRouter();
@@ -45,7 +46,7 @@ watch(currentUserStatus, (val) => {
 });
 let timer: any = null;
 
-const qrInfo = ref("验证");
+const qrInfo = ref("扫码登录");
 onMounted(async () => {
   const { data } = await loginStatus();
   if (!data.data.account || data.data.account.status == -10) {
@@ -74,6 +75,7 @@ async function getLoginStatus(cookie = "") {
     },
   });
   console.log(res.data);
+  return res.data;
 }
 // 二维码登录
 async function login() {
@@ -93,18 +95,23 @@ async function login() {
   timer = setInterval(async () => {
     const statusRes = await checkStatus(key);
     if (statusRes.code === 800) {
-      alert("二维码已过期,请重新获取");
+      // alert("二维码已过期,请重新获取");
+      qrInfo.value = "二维码已过期,请重新获取";
       clearInterval(timer);
     }
     if (statusRes.code === 803) {
       // 这一步会返回cookie
       clearInterval(timer);
-      alert("授权登录成功");
+      // alert("授权登录成功");
+      qrInfo.value = "登录成功";
+      console.log(statusRes);
       let loginRes = await getLoginStatus(statusRes.cookie);
       console.log(loginRes);
       globalstore.isLogin = true;
       globalstore.userInfo = loginRes.data.profile;
       globalstore.cookie = statusRes.cookie;
+      showModal.value = false;
+      reload();
       // localStorage.setItem("cookie", statusRes.cookie);
     }
   }, 3000);
@@ -163,6 +170,7 @@ const Logout = async () => {
     globalstore.userInfo = {};
     globalstore.qrKey = "";
     // router.push({ name: "mainPage" });
+    reload();
   }
 };
 const username = "laogao";
